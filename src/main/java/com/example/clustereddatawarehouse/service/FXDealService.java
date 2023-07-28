@@ -1,90 +1,76 @@
 package com.example.clustereddatawarehouse.service;
 
-import com.example.clustereddatawarehouse.models.FXDeal;
+import com.example.clustereddatawarehouse.entity.FXDeal;
+import com.example.clustereddatawarehouse.models.Errors;
+import com.example.clustereddatawarehouse.models.FXDealDto;
 import com.example.clustereddatawarehouse.repository.FXDealRepository;
-import com.example.clustereddatawarehouse.response.CustomResponse;
+import com.example.clustereddatawarehouse.models.CustomResponse;
+import jakarta.annotation.Nullable;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
 
 @Service
 public class FXDealService {
     @Autowired
     FXDealRepository fxDealRepository;
 
-    public CustomResponse<String> importFXDeals(FXDeal deal) {
+    public CustomResponse<Object> importFXDeals(FXDealDto deal) {
 
-        CustomResponse<String> validationResult = validateDeal(deal);
-        if (validationResult.isError()) {
-            return validationResult;
+        var validationResult = validateDeal(deal);
+        if (!validationResult.isEmpty()) {
+            return new CustomResponse<>(false, true,validationResult , HttpStatus.BAD_REQUEST.value());
         }
 
-        if (fxDealRepository.existsByDealUniqueId(deal.getDealUniqueId())) {
-            return new CustomResponse<>(false, true, "Deal with ID already exists: " + deal.getDealUniqueId(), HttpStatus.CONFLICT.value());
+        if (fxDealRepository.existsByDealUniqueId(deal.dealUniqueId())) {
+            return new CustomResponse<>(false, true, "Deal with ID already exists: " + deal.dealUniqueId(), HttpStatus.CONFLICT.value());
         }
+        FXDeal fxDeal = new FXDeal();
+        BeanUtils.copyProperties(deal, fxDeal);
+        fxDealRepository.save(fxDeal);
 
-        fxDealRepository.save(deal);
-
-        return new CustomResponse<>(true, false, "Deal imported successfully.", HttpStatus.OK.value());
-    }
-    public class InvalidDealException extends RuntimeException {
-        public InvalidDealException(String message) {
-            super(message);
-        }
-    }
-    public class DuplicateDealException extends RuntimeException {
-        public DuplicateDealException(String message) {
-            super(message);
-        }
+        return new CustomResponse<>(true, false, deal, HttpStatus.CREATED.value());
     }
 
-    private CustomResponse<String> validateDeal(FXDeal deal) {
 
-        deal.setDealUniqueId(deal.getDealUniqueId().trim());
-        deal.setFromCurrency(deal.getFromCurrency().trim());
-        deal.setToCurrency(deal.getToCurrency().trim());
+    private List<Errors>  validateDeal(FXDealDto deal) {
 
-        if (deal.getDealUniqueId() == null || deal.getDealUniqueId().trim().isEmpty()) {
-            return new CustomResponse<>(false, true, "Deal Unique ID is missing.", HttpStatus.BAD_REQUEST.value());
+        List<Errors> list = new ArrayList<>();
+
+
+        if (deal.dealUniqueId() == null || deal.dealUniqueId().trim().isEmpty()) {
+            list.add(new Errors("dealUniqueID",deal.dealUniqueId()));
         }
 
-        if (deal.getFromCurrency() == null || deal.getFromCurrency().trim().isEmpty()) {
-            return new CustomResponse<>(false, true, "From Currency ISO Code is missing.", HttpStatus.BAD_REQUEST.value());
+        if (!isValidCurrency(deal.fromCurrency())) {
+            list.add(new Errors("fromCurrency",deal.fromCurrency()));
         }
 
-        if (deal.getToCurrency() == null || deal.getToCurrency().trim().isEmpty()) {
-            return new CustomResponse<>(false, true, "To Currency ISO Code is missing.", HttpStatus.BAD_REQUEST.value());
+        if (!isValidCurrency(deal.toCurrency())) {
+            list.add(new Errors("toCurrency",deal.toCurrency()));
         }
 
-        if (deal.getDealTimestamp() == null) {
-            return new CustomResponse<>(false, true, "Deal Timestamp is missing.", HttpStatus.BAD_REQUEST.value());
+        if (deal.dealTimestamp() == null || (deal.dealTimestamp().isAfter(LocalDateTime.now()))) {
+            list.add(new Errors("dealTimeStamp",deal.dealTimestamp()));
         }
 
-        String dealTimestampString = String.valueOf(deal.getDealTimestamp()); // Assuming you have a getter for the dealTimestamp string
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
-        try {
-            LocalDateTime dealTimestamp = LocalDateTime.parse(dealTimestampString, formatter);
-        } catch (DateTimeParseException e) {
-            return new CustomResponse<>(false, true, "Malformed Deal Timestamp. Please use the format 'yyyy-MM-ddTHH:mm:ss'.", HttpStatus.BAD_REQUEST.value());
+        if (deal.dealAmount() == null || deal.dealAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            list.add(new Errors("dealAmount",deal.dealAmount()));
         }
 
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        if (deal.getDealTimestamp().isAfter(currentDateTime)) {
-            return new CustomResponse<>(false, true, "Invalid Deal Timestamp.", HttpStatus.BAD_REQUEST.value());
-        }
+        return list;
 
-        if (deal.getDealAmount() == null || deal.getDealAmount().compareTo(BigDecimal.ZERO) <= 0) {
-            return new CustomResponse<>(false, true, "Invalid Deal Amount.", HttpStatus.BAD_REQUEST.value());
-        }
-
-        return new CustomResponse<>(true, false, "Deal is valid.", HttpStatus.CREATED.value());
     }
-
+    private boolean isValidCurrency(@Nullable String currency) {
+        return currency != null && Currency.getAvailableCurrencies().stream().
+                map(Currency::getCurrencyCode).anyMatch(code -> code.equals(currency.trim()));
+    }
 }
+

@@ -1,9 +1,10 @@
 package com.example.clustereddatawarehouse.controller;
 
-import com.example.clustereddatawarehouse.models.FXDeal;
-import com.example.clustereddatawarehouse.response.CustomResponse;
+import com.example.clustereddatawarehouse.models.CustomResponse;
+import com.example.clustereddatawarehouse.models.FXDealDto;
 import com.example.clustereddatawarehouse.service.FXDealService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +15,8 @@ public class FXDealController {
     FXDealService fxDealService;
 
     @PostMapping("/create")
-    public CustomResponse<String> importFXDeals(@RequestBody FXDeal fxDeal){
-        return fxDealService.importFXDeals(fxDeal);
-
+    public ResponseEntity<CustomResponse<Object>> importFXDeals(@RequestBody FXDealDto fxDealDto){
+        return ResponseEntity.ok(fxDealService.importFXDeals(fxDealDto));
     }
 }
+//junit mockito

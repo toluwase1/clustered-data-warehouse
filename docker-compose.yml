@@ -1,0 +1,29 @@
+version: '3.1'
+services:
+  app:
+    container_name: warehouse
+    image: warehouse
+    build: ./
+    environment:
+      - HOST=db
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+    networks:
+      - network
+  db:
+    container_name: warehouse
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=fxdeals
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge

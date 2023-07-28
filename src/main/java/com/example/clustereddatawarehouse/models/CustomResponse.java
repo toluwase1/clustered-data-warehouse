@@ -1,4 +1,4 @@
-package com.example.clustereddatawarehouse.response;
+package com.example.clustereddatawarehouse.models;
 
 import lombok.Data;
 
@@ -6,10 +6,10 @@ import lombok.Data;
 public class CustomResponse<T> {
     private boolean success;
     private boolean error;
-    private T responseData;
+    private Object responseData;
     private int statusCode;
 
-    public CustomResponse(boolean success, boolean error, T responseData, int statusCode) {
+    public CustomResponse(boolean success, boolean error, Object responseData, int statusCode) {
         this.success = success;
         this.error = error;
         this.responseData = responseData;
