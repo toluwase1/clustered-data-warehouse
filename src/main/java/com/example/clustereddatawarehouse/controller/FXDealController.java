@@ -8,13 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
+@RequestMapping("/deals")
 public class FXDealController {
     @Autowired
-    FXDealService fxDealService;
+    private final FXDealService fxDealService;
+
+    public FXDealController(FXDealService fxDealService) {
+        this.fxDealService = fxDealService;
+    }
 
     @PostMapping("/import")
     public ResponseEntity<CustomResponse<Object>> importFXDeals(@RequestBody FXDealDto fxDealDto){

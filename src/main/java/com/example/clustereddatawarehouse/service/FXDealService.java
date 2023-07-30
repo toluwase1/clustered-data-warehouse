@@ -6,6 +6,7 @@ import com.example.clustereddatawarehouse.models.FXDealDto;
 import com.example.clustereddatawarehouse.repository.FXDealRepository;
 import com.example.clustereddatawarehouse.models.CustomResponse;
 import jakarta.annotation.Nullable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,14 @@ import java.util.Currency;
 import java.util.List;
 
 @Service
+@Slf4j
 public class FXDealService {
     @Autowired
-    FXDealRepository fxDealRepository;
+    private final FXDealRepository fxDealRepository;
+
+    public FXDealService(FXDealRepository fxDealRepository) {
+        this.fxDealRepository = fxDealRepository;
+    }
 
     public CustomResponse<Object> importFXDeals(FXDealDto deal) {
 

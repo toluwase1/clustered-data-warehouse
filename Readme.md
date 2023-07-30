@@ -17,7 +17,7 @@ All URIs are relative to http://localhost:8099.
 
 **Method**: [POST]
 
-**HTTP request**: `POST /import`
+**HTTP request**: `POST /deals/import`
 
 **Description**: Import a deal.
 

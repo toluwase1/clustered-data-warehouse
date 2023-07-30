@@ -2,6 +2,7 @@ package com.example.clustereddatawarehouse.service;
 
 import com.example.clustereddatawarehouse.models.Errors;
 import com.example.clustereddatawarehouse.models.FXDealDto;
+import com.example.clustereddatawarehouse.repository.FXDealRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,12 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FXDealValidationTests {
 
     private FXDealService fxDealService;
+    private FXDealRepository fxDealRepository;
 
 
     //validateDeal Tests
     @BeforeEach
     public void setUp() {
-        fxDealService = new FXDealService();
+        fxDealService = new FXDealService(fxDealRepository);
     }
 
     @Test
