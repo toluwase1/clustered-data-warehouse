@@ -1,29 +1,25 @@
 version: '3.1'
+
 services:
   app:
-    container_name: warehouse
-    image: warehouse
-    build: ./
-    environment:
-      - HOST=db
-    ports:
-      - "8081:8080"
+    build:
+      context: .
+    container_name: app
     depends_on:
       - db
-    networks:
-      - network
-  db:
-    container_name: warehouse
-    image: postgres:latest
     ports:
-      - "5432:5432"
+      - "8090:8080"
     environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=fxdeals
-    networks:
-      - network
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/fxdeals
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=toluwase
 
-networks:
-  network:
-    driver: bridge
+  db:
+    image: postgres:latest
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=toluwase
+      - POSTGRES_DATABASE=fxdeals
+    ports:
+      - "5438:5432"
