@@ -68,7 +68,7 @@ public class FXDealService {
         return list;
 
     }
-    private boolean isValidCurrency(@Nullable String currency) {
+    boolean isValidCurrency(@Nullable String currency) {
         return currency != null && Currency.getAvailableCurrencies().stream().
                 map(Currency::getCurrencyCode).anyMatch(code -> code.equals(currency.trim()));
     }
