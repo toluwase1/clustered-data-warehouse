@@ -21,6 +21,4 @@ spring:
       poolName: Hikari
       auto-commit: false
 
-server:
-  port: 8080
 

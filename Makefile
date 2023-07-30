@@ -1,7 +1,8 @@
 all: build start
 
 start:
-	docker-compose up
+	docker-compose up --build
+
 
 build:
 	chmod 700 ./mvnw
