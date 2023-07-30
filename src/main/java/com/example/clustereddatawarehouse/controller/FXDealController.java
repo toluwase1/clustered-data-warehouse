@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-@RequestMapping("/deals")
 public class FXDealController {
     @Autowired
     private final FXDealService fxDealService;

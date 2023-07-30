@@ -32,7 +32,7 @@ Request Body:
   "dealAmount": 1500.75
 }
 
-Response Body:
+Success Response Body:
 {
     "success": true,
     "error": false,
@@ -44,4 +44,11 @@ Response Body:
         "dealAmount": 1500.75
     },
     "statusCode": 201
+}
+Error Response Body
+{
+    "success": false,
+    "error": true,
+    "responseData": "Deal with ID already exists: FXD123456",
+    "statusCode": 409
 }
