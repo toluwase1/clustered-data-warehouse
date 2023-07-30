@@ -40,7 +40,7 @@ public class FXDealService {
     }
 
 
-    private List<Errors>  validateDeal(FXDealDto deal) {
+    List<Errors>  validateDeal(FXDealDto deal) {
 
         List<Errors> list = new ArrayList<>();
 

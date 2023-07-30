@@ -45,7 +45,7 @@ public class FXDealControllerTests {
 
 
     @Test
-    public void testSuccessfullyImportFXDeals() throws Exception {
+    public void testImportFXDeals() throws Exception {
         FXDealDto deal = new FXDealDto(
                 "id",
                 "EUR",
@@ -72,6 +72,7 @@ public class FXDealControllerTests {
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isOk());
-
+//                .andExpect(jsonPath("$.errorList").doesNotExist())
+//                .andExpect(jsonPath("$.data.dealUniqueId").exists());
     }
 }
