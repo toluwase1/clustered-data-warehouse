@@ -3,11 +3,9 @@ package com.example.clustereddatawarehouse.controller;
 import com.example.clustereddatawarehouse.models.CustomResponse;
 import com.example.clustereddatawarehouse.models.FXDealDto;
 import com.example.clustereddatawarehouse.service.FXDealService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,7 +20,6 @@ import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = FXDealController.class)
@@ -37,12 +34,6 @@ public class FXDealControllerTests {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-//    @Test
-//    public void FXDealController_ImportFxDeals_ReturnCreated() throws Exception {
-//        given(fxDealService.importFXDeals(ArgumentMatchers.any())).will
-//    }
-
 
     @Test
     public void testImportFXDeals() throws Exception {

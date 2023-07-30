@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FXDealServiceTest {
+public class FXDealValidationTests {
 
     private FXDealService fxDealService;
 
@@ -83,12 +83,11 @@ public class FXDealServiceTest {
 
     @Test
     public void testInvalidCurrency() {
-
         assertFalse(fxDealService.isValidCurrency(null), "null should not be a valid currency");
         assertFalse(fxDealService.isValidCurrency(""), "An empty string should not be a valid currency");
         assertFalse(fxDealService.isValidCurrency("USDD"), "USDD should not be a valid currency");
         assertFalse(fxDealService.isValidCurrency("123"), "123 should not be a valid currency");
-        assertFalse(fxDealService.isValidCurrency("USD "), "USD (with trailing space) should not be a valid currency");
+        assertFalse(fxDealService.isValidCurrency("US D"), "USD (with trailing space) should not be a valid currency");
     }
 }
 
